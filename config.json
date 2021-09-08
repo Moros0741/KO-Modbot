@@ -4,5 +4,7 @@
     "token":"NzQ5Mjk5OTAwOTY1MTkxNzgx.X0p96Q.qJOG9lxF9ehDFtemIFAGi7UotpE",
     "database_srv": "mongodb+srv://KnightOwl:6GtccFjNzrI6qkeM@komod.rlpli.mongodb.net/KOMod?retryWrites=true&w=majority",
     "version": "2.0.0-alpha",
-    "developer": "Moros#0741"
+    "developer": "Moros#0741",
+    "owner": "Bot Nerds Development",
+    "description": "Knight Owl Moderation is bot created for the Knight Owl Discord server providing a slew of protection/moderation systems to protect the server and members from back actors."
 }
