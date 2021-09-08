@@ -1,0 +1,7 @@
+{
+    "clientId": "749299900965191781",
+    "guildId": "756401202434015232",
+    "token":"NzQ5Mjk5OTAwOTY1MTkxNzgx.X0p96Q.qJOG9lxF9ehDFtemIFAGi7UotpE",
+    "database_srv": "mongodb+srv://KnightOwl:6GtccFjNzrI6qkeM@komod.rlpli.mongodb.net/KOMod?retryWrites=true&w=majority",
+    "version": "2.0.0-alpha"
+}
