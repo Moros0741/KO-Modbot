@@ -3,7 +3,7 @@ module.exports = {
     once: true,
     execute(client){
         function SetStatus() {
-            client.user.setActivity('RS Economy System', {type: "PLAYING"})
+            client.user.setActivity(".gg/KnightOwl", {type: "PLAYING"})
             return "Status Set Successfully!"
         }
         let complete = SetStatus()

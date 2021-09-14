@@ -1,0 +1,50 @@
+{
+    "reasons": {
+        "kicks": {
+            "choices": {
+                "gb": "GUIDELINES BREACH: Too many infractions against Knight Owl's Guidelines",
+                "agb": "ADVERTISING BREACH: Too many infractions against Knight Owl's Adverising Guidelines. ",
+                "awo": "NON-COMPLIANCE: Arguing with staff or members. Being biligerent, or Inconsiderate.",
+                "ic": "NON-COMPLIANCE: Continuing an argument, debate, or incident after addressed by staff and asked to stop.",
+                "cb": "CONDUCT UNBECOMING: This means that you have displayed actions that do not coincide with the server or member's interests."
+            },
+            "auto": {
+                "warns": "AUTO-ACTION: Maximum Warning Infractions Reached. (Threshold: `6`)", 
+                "mutes": "AUTO-ACTION: Maximum Mute Infractions Reached. (Threshold: `3`)",
+                "links": "AUTO-ACTION: Posting invites/links in channels where they're not allowed."
+            }
+        },
+        "mutes": {
+            "choices": {
+                "mm": "Hindering moderations efforts.",
+                "es": "EMOJI SPAM: Too many emojis in a short period of time.",
+                "ms": "MENTION SPAM: Too many mentions in a short period of time.",
+                "arg": "NON-COMPLIANCE: Arguing with staff or members. Being Biligerent, or Inconsiderate.",
+                "cb":"CONDUCT UNBECOMING: This means that you have displayed actions that do not coincide with the server or member's interests."
+            },
+            "auto": {
+                "warns":"AUTO-ACTION: Maximum Warning Infractions Reached. (Threshold: `3`)",
+                "emoji_spam": "AUTO-ACTION: Maximum infractions reached for Emoji Spam. (Threshold: `3`)",
+                "mention_spam": "AUTO-ACTION: Maximum Infractions reached for Mention Spam. (Threshold : `3`)",
+                "link_spam": "AUTO-ACTION: Maximum Infractions reached for Link Spam. (Threshold : `3`)",
+                "invites": "AUTO-ACTION: Invites are not allowed in this chat."
+            }
+        },
+        "bans": {
+            "choices": {
+                "rn": "RAIDING/NUKING: You have acted in a way that coincides with known raiders.",
+                "dtos": "TOS BREACH: You have broken one or more of Discord's Terms of Service & Community Guidelines.",
+                "dxx": "DOXXING: Displaying information about a members location, identity, or information, against their wishes.", 
+                "hs": "HATE SPEECH/RHETORIC. Your actions have indicated that you reside in or agree with the ideology of known hate groups.",
+                "nsfw": "ILLEGAL/NSFW: NSFW content is a breach of Knight Owl & Discord's Terms of Service/Community Guidelines.",
+                "dmadv": "DM ADVERTISING: DM Advertising is not allowed. You have been reported for DM Advertising.",
+                "sc": "SCAMMING: Scamming members/users, either in DM or server."
+            },
+            "auto": {
+                "raid": "AUTO-ACTION: The bot has detected that your actions are synonymous with raiders/nukers.",
+                "antialt": "AUTO-ACTION: The bot has detected that your account may be an alternate Discord account. If you have more than one account, know this is against Discord's T.O.S.",
+                "selfbot": "AUTO-ACTION: The bot has indicated that your account may be a self-bot. (A user account running a bot like program.). Note: This is against Discord's T.O.S. and usually linked with criminal activity."
+            }
+        }
+    }
+}

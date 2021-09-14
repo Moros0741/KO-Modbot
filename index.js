@@ -1,9 +1,9 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { token, database_srv } = require('./config.json');
+const { token, database_srv } = require('./data/config.json');
 const mongoose = require('mongoose')
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS]});
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES]});
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -28,9 +28,13 @@ mongoose.connect(database_srv, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 }).then(() => {
-	console.log('Connected to RSBot-Shard01/RSBot');
+	console.log('Connected to Knight-Owl/KOMod');
 }).catch((err) => {
 	console.error(err.message)
 });
 
 client.login(token);
+
+//mcS40y6P5PIeLips
+
+//mongodb+srv://Moros:mcS40y6P5PIeLips@komod.rlpli.mongodb.net/test
