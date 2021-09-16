@@ -9,7 +9,7 @@ module.exports = {
         .setName('kick')
         .setDescription("Kick a member by mention or their ID")
         .addNumberOption(option =>
-            option.setName('ID')
+            option.setName('id')
             .setDescription("The ID of the member to kick.")
             .setRequired(false)
         )

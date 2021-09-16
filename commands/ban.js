@@ -14,14 +14,14 @@ module.exports = {
             .setRequired(false)
         )
         .addNumberOption(option =>
-            option.setName('ID')
+            option.setName('id')
             .setDescription("The ID of the member to ban")
             .setRequired(false)
         )
         .addStringOption(option =>
             option.setName('reason')
             .setDescription('Reason for banning this member')
-            .setRequired(true)
+            .setRequired(false)
         )
         .addStringOption(option =>
             option.setName('preset-reasons')

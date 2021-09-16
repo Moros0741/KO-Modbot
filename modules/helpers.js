@@ -70,7 +70,7 @@ exports.getCompliance = function (memberProfile) {
     let tempbans = memberProfile.tempBans.length
 
     let average = (warns + mutes + kicks + bans + tempbans) / 5
-    let threshold = 25
+    // Threshold is statically set to 25 //
 
     if (average === 0) {
         return ":white_check_mark: Compliant"
@@ -96,4 +96,18 @@ exports.getSeconds = function (duration) {
     time_convert = {"s":1, "m":60, "h":3600,"d":86400}
     newtime= Number(time) * time_convert[index]
     return newtime
-}
+};
+
+// Kind of round about to getSeconds, but needed for automod to calculate duration of punishments based on user's
+// previous automod punishments. Set to work with other systems as well.
+exports.getDuration = function (data) {
+    let base = 1200;
+    time = base * data
+    if (time > 60 && time < 3600) {
+        return `${Math.floor(time / 60)}m`
+    } else if (time > 3600 && time < 86400){
+        return `${Math.floor(time / 3600)}h`
+    } else if (time > 86400) {
+        return `${Math.floor(time / 86400)}d`
+    }
+};

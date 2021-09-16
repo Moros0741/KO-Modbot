@@ -47,7 +47,7 @@ module.exports = {
                         {name: '\u200b', value: '\u200b', inline: true},
                         {name: "Log Channel", value: `<#${settings.logChannel}>` || "Not Set", inline: true},
                         {name: "Roles", value: `${settings.roles.map(role => role.toString()).join(', ')}` || "None", inline: false}
-                    ]),
+                    ])
 
                 return interaction.reply({embeds: [autoRoleEmbed], ephemeral: true})
             } else if (choice === 'toggle') {

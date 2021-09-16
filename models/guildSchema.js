@@ -7,7 +7,7 @@ const guildSchema = new mongoose.Schema({
         active: {type: Boolean, default: false},
         mutes: {
             roleID: String,
-            defaultTime: 300
+            defaultTime: {type: Number, default: 300}
         },
         invites: {
             active: {type: Boolean, default: false},
@@ -22,8 +22,8 @@ const guildSchema = new mongoose.Schema({
         },
         wordsFilter: {
             active: {type: Boolean, default: false},
-            words: [{word: String}],
-            channels: [{channelID: String}],
+            words: {type: Array},
+            channels: {type: Array},
             logChannel: {type: String}
         },
         nicknames: {
