@@ -23,7 +23,6 @@ module.exports = {
     async execute(interaction, guildProfile) {
         let choice = interaction.options.getString('log-type')
         let channel = interaction.options.getChannel('channel')
-        let response;
         
         if (choice === 'modlogs') {
             guildProfile.logging.modLog = channel.id 
