@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-const guildSchema = require('../models/guildSchema')
 const { MessageEmbed, Permissions } = require('discord.js')
 const helper = require('../modules/helpers')
 

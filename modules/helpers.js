@@ -111,3 +111,32 @@ exports.getDuration = function (data) {
         return `${Math.floor(time / 86400)}d`
     }
 };
+
+exports.getTicketID = function(guildProfile) {
+    function getNumber() {
+        randomnumber = Math.floor(Math.random() * (9999 - 1000) + 1000);
+        let passed = checkNumber(randomnumber)
+        if (!passed) {
+            return;
+        } else {
+            return randomnumber;
+        }
+    };
+    function checkNumber(randomnumber) {
+        try {
+            let isNumber = guildProfile.systems.tickets.ticketIDS.find(o => o.ticketID === randomnumber)
+            if (!isNumber) {
+                guildProfile.systems.tickets.ticketIDS.push(randomnumber)
+                guildProfile.save()
+                return randomnumber
+            } else {
+                let newNumber = getNumber()
+                return newNumber
+            }
+        }catch(error) {
+            console.error(error)
+        }
+    };
+    let number = getNumber()
+    return number
+};

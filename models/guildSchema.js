@@ -12,23 +12,19 @@ const guildSchema = new mongoose.Schema({
         invites: {
             active: {type: Boolean, default: false},
             channels: [{channelID: String}],
-            links: [{url: String}],
-            logChannel: {type: String}
+            links: [],
         },
         autoRoles: {
             active: {type: Boolean, default: false},
             roles: [{roleID: String}],
-            logChannel: {type: String},
         },
         wordsFilter: {
             active: {type: Boolean, default: false},
             words: {type: Array},
             channels: {type: Array},
-            logChannel: {type: String}
         },
         nicknames: {
             active: {type: Boolean, default: false},
-            logChannel: {type: String},
             gateChannel: {type: String},
             requests: [{userID: String, messageID: String, nickname: String}]
         },
@@ -37,17 +33,14 @@ const guildSchema = new mongoose.Schema({
             ageThreshold: {type: Number, default: 3},
             checkAvatar: {type: Boolean, default: false},
             action: {type: String, default: "warn"},
-            logChannel: {type: String}
-        },
-        modLog: {
-            active: {type: Boolean, default: false},
-            logChannel: {type: String}
         },
         tickets: {
             active: {type: Boolean, default: false},
+            ticketIDS: [],
             types: {
                 partnerships: {
-                    channelID: {type: Number},
+                    channelID: String,
+                    messageID: String,
                     title: {type: String, default: "Partnership Submissions"},
                     message: {type: String, default: "Press the button below to open a ***Partnership Ticket***."},
                     roles: [{roleID: String}],
@@ -57,15 +50,15 @@ const guildSchema = new mongoose.Schema({
                     channelID: {type: String},
                     title: {type: String, default: "Support Tickets"},
                     message: {type: String, default: "Press the button below to open a ***Support Ticket***."},
-                    roles: {type: Array, default: undefined},
-                    category: {type: String}
+                    roles: [{roleID: String}],
+                    category: String
                 },
                 secureChannel: {
-                    channelID: {type: String},
+                    channelID: String,
                     title: {type: String, default: "Secure Channels"},
                     message: {type: String, default: "Press the button below to open a ***Secure Channel***"},
-                    roles: {type: Array, default: undefined},
-                    category: {type: String}
+                    roles: [{roleID: String}],
+                    category: String
                 }
             }
         }
@@ -101,6 +94,14 @@ const guildSchema = new mongoose.Schema({
         mod: {type: String},
         admin: {type: String},
         botMaster: {type: String},
+    },
+    logging: {
+        modLog: String,
+        serverUpdates: String,
+        memberUpdates: String,
+        joinLogs: String,
+        leaveLogs: String,
+        ticketLogs: String
     }
 });
 

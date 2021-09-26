@@ -42,21 +42,21 @@ exports.checkBadWords = async function(message, guildProfile) {
     }
 };
 
-exports.checkbadLinks = async function(message, guildProfile) {
-    let channelCensor = guildProfile.systems.wordsFilter
-    let badLinks
-    let wordChannels;
-    if (channelCensor.words < 1 || channelCensor.channels < 1) {
+exports.checkInvites = async function(message, guildProfile) {
+    let inviteCensor = guildProfile.systems.invites
+    let inviteLinks
+    let inviteChannels;
+    if (inviteCensor.links < 1 || inviteCensor.channels < 1) {
         return;
-    } else if (channelCensor.channels > 0 && channelCensor.words > 0) {
-        badWords = channelCensor.words
-        wordChannels = channelCensor.channels
+    } else if (inviteCensor.channels > 0 && inviteCensor.words > 0) {
+        inviteLinks = inviteCensor.links
+        inviteChannels = inviteCensor.channels
     }
-    if (wordChannels.includes(message.channel.id)) {
-        let word = badWords.find(v => message.content.includes(v));
-        if (!word === undefined) {
-            let reason = `Links are not allowed. (${word})`
+    if (inviteChannels.includes(message.channel.id)) {
+        let invite = inviteLinks.find(v => message.content.includes(v));
+        if (!invite === undefined) {
+            let reason = `Links are not allowed.`
             await takeAction(message.author, word, guildProfile, reason)
         }
     }
-}
+};

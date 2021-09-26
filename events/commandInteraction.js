@@ -6,6 +6,13 @@ module.exports = {
     async execute(interaction) {
         let profileData;
         let guildProfile;
+
+        if (!interaction.isCommand()) return;
+
+        const command = interaction.client.commands.get(interaction.commandName);
+    
+        if (!command) return;
+        
         try {
             guildProfile = await guildSchema.findOne({guildID: interaction.guild.id})
             if (!guildProfile) {
@@ -13,7 +20,7 @@ module.exports = {
                     guildID: interaction.guild.id
                 });
                 serverprofile.save()
-                return guildProfile = serverprofile
+                guildProfile = serverprofile
             }
         } catch(error) {
             console.error(error)
@@ -26,17 +33,11 @@ module.exports = {
                     nickname: interaction.member.displayName
                 });
                 memberprofile.save()
-                return profileData = memberprofile;
+                profileData = memberprofile;
             } 
         } catch(error) {
             console.error(error)
         };
-
-        if (!interaction.isCommand()) return;
-        
-        const command = interaction.client.commands.get(interaction.commandName);
-    
-        if (!command) return;
         
         try {
             await command.execute(interaction, guildProfile);
