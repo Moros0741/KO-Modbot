@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-const { MessageEmbed, Permissions, Message } = require('discord.js')
+const { MessageEmbed, Permissions } = require('discord.js')
 const modHelper = require('../modules/modActions')
 const helper = require('../modules/helpers')
 const presetReasons = require('../data/responses.json')

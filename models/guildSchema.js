@@ -35,30 +35,22 @@ const guildSchema = new mongoose.Schema({
             action: {type: String, default: "warn"},
         },
         tickets: {
-            active: {type: Boolean, default: false},
             ticketIDS: [],
             types: {
                 partnerships: {
-                    channelID: String,
-                    messageID: String,
-                    title: {type: String, default: "Partnership Submissions"},
-                    message: {type: String, default: "Press the button below to open a ***Partnership Ticket***."},
-                    roles: [{roleID: String}],
-                    category: {type: String}
+                    category: String,
+                    allowRoles: [],
+                    denyRoles: []
                 },
                 support: {
-                    channelID: {type: String},
-                    title: {type: String, default: "Support Tickets"},
-                    message: {type: String, default: "Press the button below to open a ***Support Ticket***."},
-                    roles: [{roleID: String}],
-                    category: String
+                    category: String,
+                    allowRoles: [],
+                    denyRoles: []
                 },
                 secureChannel: {
-                    channelID: String,
-                    title: {type: String, default: "Secure Channels"},
-                    message: {type: String, default: "Press the button below to open a ***Secure Channel***"},
-                    roles: [{roleID: String}],
-                    category: String
+                    category: String,
+                    allowRoles: [],
+                    denyRoles: []
                 }
             }
         }
@@ -96,12 +88,13 @@ const guildSchema = new mongoose.Schema({
         botMaster: {type: String},
     },
     logging: {
-        modLog: String,
-        serverUpdates: String,
-        memberUpdates: String,
-        joinLogs: String,
-        leaveLogs: String,
-        ticketLogs: String
+        active: {type: Boolean, default: false},
+        modLog: {active: {type: Boolean, default: false}, channel: String},
+        serverUpdates: {active: {type: Boolean, default: false}, channel: String},
+        memberUpdates: {active: {type: Boolean, default: false}, channel: String},
+        joinLogs: {active: {type: Boolean, default: false}, channel: String},
+        leaveLogs: {active: {type: Boolean, default: false}, channel: String},
+        ticketLogs: {active: {type: Boolean, default: false}, channel: String}
     }
 });
 

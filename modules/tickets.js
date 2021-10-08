@@ -3,9 +3,10 @@ const guildSchema = require ('../models/guildSchema')
 const ticketSchema = require('../models/ticketSchema')
 const helper = require('../modules/helpers')
 
-async function fetchTicket(memberID) {
-    let ticket = await ticketSchema.findOne({creatorID: memberID, isActive: true})
-    return ticket
+async function updateTicket(channel, ticketData) {
+    let ticket = await ticketSchema.findOne({"ticketID": ticketData.ticketID, "isActive": true})
+    ticket.channelID = channel.id
+    ticket.save();
 }
 
 function getPermissions(member, ticketData, guildProfile) {
@@ -18,6 +19,12 @@ function getPermissions(member, ticketData, guildProfile) {
                     Permissions.FLAGS.SEND_MESSAGES,
                     Permissions.FLAGS.VIEW_CHANNEL,
                     Permissions.FLAGS.READ_MESSAGE_HISTORY
+                ]
+            },
+            {
+                id: member.guild.id,
+                deny: [
+                    Permissions.FLAGS.VIEW_CHANNEL
                 ]
             }
         ]
@@ -115,8 +122,32 @@ function getPermissions(member, ticketData, guildProfile) {
     }
 };
 
-async function createTicketChannel(member, ticketID, guildProfile, interaction) {
-    let ticketData = await fetchTicket(member.id)
+async function sendTicketLog(guildProfile, interaction, ticket, status) {
+    if (!guildProfile.logging.ticketLogs.active === true) return; 
+    let channel = interaction.guild.channels.cache.find(channel => channel.id === guildProfile.logging.ticketLogs.channel)
+    let embed;
+    if (status === 'open') {
+        embed = new MessageEmbed()
+            .setTitle('Ticket Opened')
+            .setDescription(`**Ticket ID:** \`# ${ticket.ticketID}\``)
+            .addField('Creator', `<@${ticket.creatorID}>`, true)
+            .addField('\u200b', '\u200b', true)
+            .addField('Ticket Type', ticket.ticketType, true)
+            .setColor('GREEN')
+    } else if (status === 'close') {
+        embed = new MessageEmbed()
+            .setTitle('Ticket Closed')
+            .setDescription(`**Ticket ID:** \`# ${ticket.ticketID}\``)
+            .addField('Creator', `<@${ticket.creatorID}>`, true)
+            .addField('\u200b', '\u200b', true)
+            .addField('Ticket Type', ticket.ticketType, true)
+            .addField("Ticket Transcripts", `[View Ticket Transcript](https://knightowl.gg/)`)
+            .setColor('RED')
+    }
+    await channel.send({embeds: [embed]})
+};
+
+async function createTicketChannel(member, ticketData, guildProfile, interaction) {
     let permissions = getPermissions(member, ticketData, guildProfile)
     let category;
     let title;
@@ -126,7 +157,7 @@ async function createTicketChannel(member, ticketID, guildProfile, interaction) 
         title = "Secure Channel"
         thumbnail = 'https://media.discordapp.net/attachments/883205604959748136/890746717320937542/final_614d101a066f0c002965408b_934801-removebg-preview_1.png'
         description = `
-            ** <@${memberID}> Welcome to your Secure Channel. (\`# ${ticketID}\`)
+            ** <@${ticketData.creatorID}> Welcome to your Secure Channel. (\`# ${ticketData.ticketID}\`)
 
             Please read the following information carefully as it will detail the next steps for you.
             
@@ -148,7 +179,7 @@ async function createTicketChannel(member, ticketID, guildProfile, interaction) 
         title = "Support Ticket"
         thumbnail = 'https://media.discordapp.net/attachments/883205604959748136/890746720852541480/Untitled_design__2_-removebg-preview.png'
         description = `
-            ** <@${memberID}> Welcome to your Support Ticket. (\`# ${ticketID}\`)**
+            ** <@${ticketData.creatorID}> Welcome to your Support Ticket. (\`# ${ticketData.ticketID}\`)**
             
             Please read the following information carefully as it will detail the next steps for you.
             
@@ -170,7 +201,7 @@ async function createTicketChannel(member, ticketID, guildProfile, interaction) 
         title = "Partnership Submission"
         thumbnail = 'https://media.discordapp.net/attachments/883205604959748136/890746724426088498/Untitled_design__4_-removebg-preview.png'
         description = `
-        ** <@${memberID}> Welcome to your Partnership Submission (\`# ${ticketID}\`)**
+        ** <@${ticketData.creatorID}> Welcome to your Partnership Submission (\`# ${ticketData.ticketID}\`)**
         
         Please read the following information carefully as it will detail the next steps for you.
         
@@ -196,16 +227,18 @@ async function createTicketChannel(member, ticketID, guildProfile, interaction) 
         `
         category = guildProfile.systems.tickets.types.partnerships.category
     }
-    let channel = member.guild.channels.create(ticketData.channelName, {
+    let channel = await member.guild.channels.create(ticketData.channelName, {
         parent: category,
         reason: "Ticket Creation", 
         permissionOverwrites: permissions
     });
+
+
     let ticketEmbed = new MessageEmbed()
         .setTitle(title)
         .setDescription(description)
         .setThumbnail(thumbnail)
-        .setFooter({text: member.guild.name, iconURL: member.guild.iconURL({dynamic: true})})
+        .setFooter(`${member.guild.name}`, member.guild.iconURL({dynamic: true}))
         .setColor(member.guild.me.displayHexColor)
 
     let row = new MessageActionRow()
@@ -215,8 +248,9 @@ async function createTicketChannel(member, ticketID, guildProfile, interaction) 
                 .setStyle('PRIMARY')
                 .setLabel('Close Ticket')
         )
-    
-    await channel.send({contents: "@here", embeds: [ticketEmbed], components: [row]})
+    await updateTicket(channel, ticketData)
+    await channel.send({embeds: [ticketEmbed], components: [row]})
+    await sendTicketLog(guildProfile, interaction, ticketData, 'open')
     
 };
 
@@ -233,12 +267,12 @@ exports.createTicket = async function(member, ticketType, guildProfile, interact
             createdDate: Date.now(),
         });
         newTicket.save();
+        ticketData = newTicket
     } catch (err) {
         console.error(err)
     };
     
-    console.log(ticketData)
-    await createTicketChannel(member, ticketIDNumber, guildProfile, interaction)
+    await createTicketChannel(member, ticketData, guildProfile, interaction)
 };
 
 exports.createTicketMessage = async function(channel, tType){
@@ -302,14 +336,35 @@ exports.createTicketMessage = async function(channel, tType){
     return m.id
 };
 
+exports.sendConfirmation = function(interaction) {
+    let row = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId('yes-close')
+                .setLabel('Yes, Close')
+                .setStyle('SUCCESS'),
+            new MessageButton()
+                .setCustomId('do-not-close')
+                .setLabel('No, Cancel')
+                .setStyle('DANGER')
+        )
+    let embed = new MessageEmbed()
+        .setTitle("Are you sure?")
+        .setDescription('Are you sure you want to close this ticket? Please choose below.')
+        .setColor(interaction.guild.me.displayHexColor)
+    return interaction.reply({embeds: [embed], components: [row]})
+
+};
+
 exports.closeTicket = async function(interaction, guildProfile) {
-    let ticket = ticketSchema.findOne({channelID: interaction.channel.id})
+    let ticket = await ticketSchema.findOne({channelID: interaction.channel.id})
     if (!ticket || ticket.isActive === false) {
-        return interaction.reply({contents: `Something went wrong. There are no open tickets that meet the criteria: ChannelID: \`${interaction.channel.id}\``, ephemeral: true});
+        return interaction.reply({content: `Something went wrong. There are no open tickets that meet the criteria: ChannelID: \`${interaction.channel.id}\``, ephemeral: true});
     
     } else {
         await interaction.channel.delete({reason: `Ticket closed by ${interaction.user.tag}`})
         ticket.isActive = false
         ticket.save();
+        await sendTicketLog(guildProfile, interaction, ticket, 'close')
     }
 }

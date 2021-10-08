@@ -140,3 +140,27 @@ exports.getTicketID = function(guildProfile) {
     let number = getNumber()
     return number
 };
+
+exports.getDateDifference = function(member) {
+    return age = ((Date.now() - member) / (1000 * 3600 * 24)).toFixed(0)
+}
+
+exports.formatNumber = function (number) {
+    let num = String(number).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
+    return num
+}
+
+exports.getDifference = function(lists1, lists2) {
+    let difference = []
+    try {
+        for (list of lists1) {
+            if (!lists2.includes(list)) {
+                difference.push(list.toString())
+            }
+        }
+        return difference
+    } catch (err) {
+        console.error(err)
+    }
+};
+

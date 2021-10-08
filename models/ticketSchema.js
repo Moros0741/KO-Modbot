@@ -6,7 +6,6 @@ const ticketSchema = new mongoose.Schema({
     channelID: String,
     ticketType: String,
     channelName: String,
-    channelCategory: String,
     creator: String,
     creatorID: String,
     createdDate: {type: Date, default: Date.now()},

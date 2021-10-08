@@ -2,6 +2,19 @@ const {MessageEmbed, Message, Interaction } = require('discord.js')
 const userSchema = require('../models/userSchema')
 const helper = require('../modules/helpers')
 
+async function sendModLog(guildProfile, guild, embed) {
+    try {
+        let channelID = guildProfile.logging.modLog
+        if (!channelID) return;
+
+        let channel = guild.channels.cache.find(channel => channel.id === channelID)
+
+        await channel.send({embeds: [embed]})
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 async function getProfile(member) {
     let userProfile;
     try{
@@ -35,21 +48,15 @@ exports.warnMember = async function (guild, guildProfile, member, reason, modera
     } catch (err) {
         console.error(err)
     }
-    if (guildProfile.system.modLog.active === true) {
-        try {
-            let channel = guild.channels.fetch(guildProfile.systems.modLog.channelID)
-            let embed = new MessageEmbed()
-                .setTitle("A Member was Warned!")
-                .setDescription(`**Case Number:** \`${caseNumber}\` \n**Member:** ${member.toString()} (${member.id}) \n**Moderator:** ${moderator.toString()} (${moderator.id}) \n**Reason:** *${reason}*`)
-                .setTimestamp(Date.UTC())
-                .setColor('GOLD')
-                .setThumbnail(member.user.avatarURL({dynamic: true}))
-            
-            await channel.send({embeds: [embed]})
-        } catch (err) {
-            console.error(err)
-        }
-    }
+    
+    let warnEmbed = new MessageEmbed()
+        .setTitle("A Member was Warned!")
+        .setDescription(`**Case Number:** \`${caseNumber}\` \n**Member:** ${member.toString()} (${member.id}) \n**Moderator:** ${moderator.toString()} (${moderator.id}) \n**Reason:** *${reason}*`)
+        .setTimestamp(Date.UTC())
+        .setColor('GOLD')
+        .setThumbnail(member.user.avatarURL({dynamic: true}))
+    
+    await sendModLog(guildProfile, guild, warnEmbed)
 };
 
 exports.muteMember = async function (guild, guildProfile, member, reason, duration, moderator) {
@@ -81,21 +88,16 @@ exports.muteMember = async function (guild, guildProfile, member, reason, durati
     } catch (err) {
         console.error(err)
     }
-    if (guildProfile.system.modLog.active === true) {
-        try {
-            let channel = guild.channels.fetch(guildProfile.systems.modLog.channelID)
-            let embed = new MessageEmbed()
-                .setTitle("A Member was Muted!")
-                .setDescription(`**Case Number:** \`${caseNumber}\` \n**Member:** ${member.toString()} (${member.id}) \n**Moderator:** ${moderator.toString()} (${moderator.id}) \n**Reason:** *${reason}*`)
-                .setTimestamp(Date.UTC())
-                .setColor('GOLD')
-                .setThumbnail(member.user.avatarURL({dynamic: true}))
+
+    let muteEmbed = new MessageEmbed()
+        .setTitle("A Member was Muted!")
+        .setDescription(`**Case Number:** \`${caseNumber}\` \n**Member:** ${member.toString()} (${member.id}) \n**Moderator:** ${moderator.toString()} (${moderator.id}) \n**Reason:** *${reason}*`)
+        .setTimestamp(Date.UTC())
+        .setColor('GOLD')
+        .setThumbnail(member.user.avatarURL({dynamic: true}))
+    
+    await sendModLog(guildProfile, guild, muteEmbed)
             
-            await channel.send({embeds: [embed]})
-        } catch (err) {
-            console.error(err)
-        }
-    }
     try {
         await member.roles.add(role, [`Muted by ${moderator.user.tag}`]);
     } catch (err) {
@@ -123,18 +125,8 @@ exports.kickMember = async function (guild, guildProfile, member, reason, modera
         .setColor('ORANGE')
         .setTimestamp(Date.UTC())
 
-    try {
-        if (guildProfile.systems.modLog.active === true) {
-            let channel = guild.channels.cache.find(channel => channel.id === guildProfile.systems.modLog.channelID)
-            try {
-                await channel.send({embeds: [kickMessage]})
-            } catch (err) {
-                console.error(err)
-            }
-        } 
-    } catch (err) {
-        console.error(err)
-    }
+    await sendModLog(guildProfile, guild, kickEmbed)
+
     try {
         await member.kick(`${moderator.user.tag} - ${reason}`)
     } catch (err) {
@@ -158,21 +150,14 @@ exports.banMember = async function (guild, guildProfile, member, reason, moderat
         console.error(err)
     };
 
-    let banMessage = new MessageEmbed()
+    let banEmbed = new MessageEmbed()
         .setTitle("A Member was Banned!")
         .setDescription(`**Case Number:** ${caseNumber} \n**Member:** ${member.toString()} (${member.id}) \n**Moderator:** ${moderator.toString()} (${moderator.id}) \b**Reason:** *${reason}*`)
         .setThumbnail(member.user.avatarURL({dynamic: true}))
         .setColor('DARK_RED')
     
-    try {
-        if (guildProfile.systems.modLog.active === true) {
-            let channel = guild.channels.cache.find(channel => channel.id === guildProfile.systems.modLog.channelID)
+    await sendModLog(guildProfile, guild, banEmbed)
 
-            await channel.send({embeds: [banMessage]})
-        } 
-    } catch(err) {
-        console.error(err)
-    }
     try {
         await member.ban(`${moderator.user.tag} - ${reason}`)
     } catch (err) {
@@ -199,22 +184,15 @@ exports.memberTempBan = async function (guild, guildProfile, member, reason, mod
         console.error(err)
     }
 
-    let tempBanMessage = new MessageEmbed()
+    let tempBanEmbed = new MessageEmbed()
         .setTitle('A Member was TempBanned!')
         .setDescription(`**Case Number:** \`${caseNumber}\` \n**Member:** ${member.toString()} (${member.id}) \n**Moderator:** ${moderator.toString()} (${moderator.id}) \n**Reason:** *${reason}*`)
         .setThumbnail(member.user.avatarURL({dynamic: true}))
         .setColor('RED')
         .setTimestamp(Date.UTC())
     
-    try {
-        if (guildProfile.systems.modLog.active === true) {
-            let channel = guild.channels.cache.find(channel => channel.id === guildProfile.systems.modLog.channelID)
+    await sendModLog(guildProfile, guild, tempBanEmbed)
 
-            await channel.send({embeds: [tempBanMessage]})
-        }
-    } catch (err) {
-        console.error(err)
-    }
     try {
         await member.ban({reason: `${moderator.user.tag} - ${reason}`})
     } catch (err) {

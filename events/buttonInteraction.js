@@ -1,6 +1,7 @@
 const ticketHelper = require('../modules/tickets')
 const guildSchema = require('../models/guildSchema')
-const ticketSchema = require('../models/ticketSchema')
+const ticketSchema = require('../models/ticketSchema');
+const { MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
     name: "interactionCreate",
@@ -13,10 +14,10 @@ module.exports = {
         try {
             guildProfile = await guildSchema.findOne({guildID: interaction.guild.id})
             if (!guildProfile) {
-                let serverprofile = new guildSchema({
+                let serverProfile = new guildSchema({
                     guildID: interaction.guild.id
                 });
-                serverprofile.save()
+                serverProfile.save()
                 guildData = serverProfile
             }
             guildData = guildProfile
@@ -48,13 +49,20 @@ module.exports = {
             let ticket = await ticketSchema.findOne({creatorID: interaction.member.id, isActive: true})
             if (!ticket) {
                 await ticketHelper.createTicket(interaction.member, 'support', guildData, interaction)
-                return interaction.deferReply()
+                return interaction.reply({content: "Your ticket is being created.", ephemeral: true})
             
             } else {
                 return interaction.reply({content: `You already have an active ticket <#${ticket.channelID}>`, ephemeral: true})
             } 
         } else if (interaction.customId === 'close-ticket') {
-            await ticketHelper.closeTicket(interaction, guildData)
+            await ticketHelper.sendConfirmation(interaction)
+            
+        } else if (interaction.customId === 'do-not-close') {
+            await interaction.message.delete()
+            return interaction.deferReply()
+
+        } else if (interaction.customId === 'yes-close') {
+            await ticketHelper.closeTicket(interaction, guildProfile)
         }
     },
 };
